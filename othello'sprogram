@@ -1,0 +1,58 @@
+N = 6 
+
+EMPTY = 0 
+BLACK = 1 
+WHITE = 2 
+STONE = ['□', '●', '○'] 
+
+def xy(p):
+  return p % N, p // N
+
+def p(x, y):
+  return x + y * N
+
+
+def init_board():
+  board = [EMPTY] * (N*N)
+  c = N//2
+  board[p(c, c)] = BLACK
+  board[p(c-1, c-1)] = BLACK
+  board[p(c, c-1)] = WHITE
+  board[p(c-1, c)] = WHITE
+  return board
+
+def show_board(board):
+  counts = [0, 0, 0]
+  for y in range(N):
+    for x in range(N):
+      stone = board[p(x, y)]
+      counts[stone] += 1
+      print(STONE[stone], end='')
+    print()
+  print()
+  for pair in zip(STONE, counts):
+    print(pair, end=' ')
+  print()
+
+
+def on_borad(x, y):
+  return 0 <= x < N and 0 <= y < N
+
+def try_reverse(board, x, y, dx, dy, color):
+  if not on_borad(x, y) or board[p(x, y)] == EMPTY:
+    return False
+  if board[p(x, y)] == color:
+    return True
+  if try_reverse(board, x+dx, y+dy, dx, dy, color):
+    board[p(x, y)] = color
+    return True
+  return False
+
+def opposite(color):
+  if color == BLACK:
+    return WHITE
+  return BLACK
+
+
+def is_oposite(board, x, y, color):
+  return on_borad(x, y) and board[p(x, y)] == opposite(color)
